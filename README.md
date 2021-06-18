@@ -1,1 +1,1 @@
-# prime-number
+# object-path
