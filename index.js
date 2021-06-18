@@ -55,6 +55,7 @@ function mutable(object, prop, value) {
 
 module.exports = function (object, prop, value) {
   const paths = propToPath(prop);
+  //  const object = JSON.parse(JSON.stringify(defaultObject));
 
   function setPropertyValue(partialObject, index) {
     const nextPath = index + 1;
@@ -63,13 +64,12 @@ module.exports = function (object, prop, value) {
       const dataOrObject = partialObject[paths[index]];
 
       if (typeof dataOrObject === "object") {
-        partialObject[paths[index]] = setPropertyValue(dataOrObject, nextPath);
-
-        return partialObject;
+        return Object.assign(partialObject, {
+          ...partialObject,
+          [paths[index]]: setPropertyValue(dataOrObject, nextPath),
+        });
       }
-
-      partialObject[paths[index]] = value;
-      return partialObject;
+      return Object.assign(partialObject, { [paths[index]]: value });
     }
     return partialObject;
   }

@@ -40,7 +40,7 @@ it("should change second layer", () => {
   });
 });
 
-it.only("should change second layer", () => {
+it("should change second layer", () => {
   const deep = "NewDeep";
 
   const result = set(defaultObject, "address.deep.test", deep);
@@ -53,6 +53,26 @@ it.only("should change second layer", () => {
       ...defaultObject.address,
       deep: {
         test: deep,
+      },
+    },
+  });
+});
+
+it.only("should assign object", () => {
+  const object = {
+    property: "value",
+  };
+
+  const result = set(defaultObject, "address.deep.test", object);
+
+  console.log(defaultObject, result);
+
+  expect(result).toEqual({
+    ...defaultObject,
+    address: {
+      ...defaultObject.address,
+      deep: {
+        test: object,
       },
     },
   });
