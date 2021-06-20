@@ -53,26 +53,34 @@ function mutable(object, prop, value) {
   return setPropertyValue(object, 0);
 }
 
-module.exports = function (object, prop, value) {
+function set(defaultObject, prop, value) {
   const paths = propToPath(prop);
-  //  const object = JSON.parse(JSON.stringify(defaultObject));
 
-  function setPropertyValue(partialObject, index) {
+  function setPropertyValue(object, index) {
     const nextPath = index + 1;
 
-    if (partialObject.hasOwnProperty(paths[index])) {
-      const dataOrObject = partialObject[paths[index]];
+    if (object.hasOwnProperty(paths[index])) {
+      const dataOrObject = object[paths[index]];
+      const clone = Object.assign({}, object);
+
+      if (Array.isArray(object[paths[nextPath]])) {
+        clone[paths[nextPath]][paths[nextPath + 1]] = value;
+        return clone;
+      }
 
       if (typeof dataOrObject === "object") {
-        return Object.assign(partialObject, {
-          ...partialObject,
-          [paths[index]]: setPropertyValue(dataOrObject, nextPath),
-        });
+        clone[paths[index]] = setPropertyValue(dataOrObject, nextPath);
+      } else {
+        clone[paths[index]] = value;
       }
-      return Object.assign(partialObject, { [paths[index]]: value });
+      return clone;
     }
-    return partialObject;
+    return object;
   }
 
-  return setPropertyValue(object, 0);
+  return setPropertyValue(defaultObject, 0);
+}
+
+module.exports = {
+  set,
 };
