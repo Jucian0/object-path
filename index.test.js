@@ -244,6 +244,12 @@ describe("test del function", () => {
     };
     expect(result).toEqual(expected);
   });
+
+  it("default object and final object should be different", () => {
+    const result = del(defaultObject, "address.details");
+
+    expect(defaultObject).not.toEqual(result);
+  });
 });
 
 describe("test get function", () => {
@@ -303,6 +309,12 @@ describe("test get function", () => {
     const expected = defaultObject.address.details.delta;
 
     expect(result).toEqual(expected);
+  });
+
+  it("default object and final object should be different", () => {
+    const result = del(defaultObject, "address.details");
+
+    expect(defaultObject).not.toEqual(result);
   });
 });
 
