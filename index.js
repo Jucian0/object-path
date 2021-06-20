@@ -1,18 +1,4 @@
-function propToPath(prop) {
-  return prop
-    .replaceAll("][", ".")
-    .replaceAll("]", ".")
-    .replaceAll("[", ".")
-    .split(".");
-}
-
-function isPrimitive(value) {
-  return (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  );
-}
+const { propToPath } = require("./utils");
 
 function set(defaultObject, prop, value) {
   const paths = propToPath(prop);
@@ -47,17 +33,16 @@ function del(defaultObject, prop) {
         clone = object.slice();
       }
 
-      const result = deletePropertyValue(object[paths[index]], index + 1);
-
-      if (typeof result !== "undefined") {
-        clone[paths[index]] = result;
+      if (Array.isArray(object)) {
+        clone.splice(paths[index], 1);
       } else {
-        if (Array.isArray(object)) {
-          clone.splice(paths[index], 1);
-        } else {
-          delete clone[paths[index]];
-        }
+        const result = deletePropertyValue(object[paths[index]], index + 1);
+
+        typeof result === "undefined"
+          ? delete clone[paths[index]]
+          : (clone[paths[index]] = result);
       }
+
       return clone;
     }
     return undefined;
