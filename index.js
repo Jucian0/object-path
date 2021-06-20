@@ -35,6 +35,8 @@ function set(defaultObject, prop, value) {
   return setPropertyValue(defaultObject, 0);
 }
 
+function delete()
+
 module.exports = {
   set,
 };
