@@ -221,16 +221,16 @@ describe("test del function", () => {
     expect(result).toEqual(expected);
   });
 
-  it.only("should delete a value fo an array", () => {
+  it("should delete a value of an array", () => {
     const result = del(defaultObject, "address.details.list.3");
 
-    console.log(result.address);
     const expected = {
       ...defaultObject,
       address: {
         details: {
           number: defaultObject.address.details.number,
           list: [1, 2, 3, 5],
+          street: "Street",
         },
       },
     };

@@ -38,25 +38,32 @@ function set(defaultObject, prop, value) {
 function del(defaultObject, prop) {
   const paths = propToPath(prop);
 
-  function setPropertyValue(object, index) {
+  function deletePropertyValue(object, index) {
     let clone = Object.assign({}, object);
 
     if (paths.length > index) {
-      const result = setPropertyValue(object[paths[index]], index + 1);
+      if (Array.isArray(object)) {
+        paths[index] = parseInt(paths[index]);
+        clone = object.slice();
+      }
+
+      const result = deletePropertyValue(object[paths[index]], index + 1);
 
       if (typeof result !== "undefined") {
         clone[paths[index]] = result;
       } else {
-        delete clone[paths[index]];
+        if (Array.isArray(object)) {
+          clone.splice(paths[index], 1);
+        } else {
+          delete clone[paths[index]];
+        }
       }
-
       return clone;
     }
-
     return undefined;
   }
 
-  return setPropertyValue(defaultObject, 0);
+  return deletePropertyValue(defaultObject, 0);
 }
 
 module.exports = {
