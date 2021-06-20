@@ -35,8 +35,31 @@ function set(defaultObject, prop, value) {
   return setPropertyValue(defaultObject, 0);
 }
 
-function delete()
+function del(defaultObject, prop) {
+  const paths = propToPath(prop);
+
+  function setPropertyValue(object, index) {
+    let clone = Object.assign({}, object);
+
+    if (paths.length > index) {
+      const result = setPropertyValue(object[paths[index]], index + 1);
+
+      if (typeof result !== "undefined") {
+        clone[paths[index]] = result;
+      } else {
+        delete clone[paths[index]];
+      }
+
+      return clone;
+    }
+
+    return undefined;
+  }
+
+  return setPropertyValue(defaultObject, 0);
+}
 
 module.exports = {
   set,
+  del,
 };

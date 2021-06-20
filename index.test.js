@@ -1,8 +1,8 @@
-const { set } = require("./index");
+const { set, del } = require("./index");
 
 describe("test set function with objects", () => {
   const defaultObject = {
-    name: "juciano de carvalho",
+    name: "jucian0",
     email: "juciano@juciano.com",
     address: {
       street: "Doesn't meter",
@@ -103,7 +103,7 @@ describe("test set function with objects", () => {
 
 describe("test set function with arrays", () => {
   const defaultObject = {
-    name: "juciano de carvalho",
+    name: "jucian0",
     email: "juciano@juciano.com",
     address: {
       info: [],
@@ -172,6 +172,66 @@ describe("test set function with arrays", () => {
       ...defaultObject,
       address: {
         info: [value],
+      },
+    };
+    expect(result).toEqual(expected);
+  });
+});
+
+describe("test del function", () => {
+  const defaultObject = {
+    name: "Jucian0",
+    email: "juciano@juciano.com",
+    address: {
+      details: {
+        street: "Street",
+        number: 1220,
+        list: [1, 2, 3, 4, 5],
+      },
+    },
+  };
+
+  it("should delete a value at thirsty layer", () => {
+    const result = del(defaultObject, "address.details.street");
+
+    const expected = {
+      ...defaultObject,
+      address: {
+        details: {
+          number: defaultObject.address.details.number,
+          list: [1, 2, 3, 4, 5],
+        },
+      },
+    };
+    expect(result).toEqual(expected);
+  });
+
+  it("should delete an array at thirsty layer", () => {
+    const result = del(defaultObject, "address.details.list");
+
+    const expected = {
+      ...defaultObject,
+      address: {
+        details: {
+          number: defaultObject.address.details.number,
+          street: "Street",
+        },
+      },
+    };
+    expect(result).toEqual(expected);
+  });
+
+  it.only("should delete a value fo an array", () => {
+    const result = del(defaultObject, "address.details.list.3");
+
+    console.log(result.address);
+    const expected = {
+      ...defaultObject,
+      address: {
+        details: {
+          number: defaultObject.address.details.number,
+          list: [1, 2, 3, 5],
+        },
       },
     };
     expect(result).toEqual(expected);
