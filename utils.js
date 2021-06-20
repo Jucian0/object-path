@@ -6,6 +6,15 @@ function propToPath(prop) {
     .split(".");
 }
 
+function isPrimitive(value) {
+  return (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  );
+}
+
 module.exports = {
   propToPath,
+  isPrimitive,
 };

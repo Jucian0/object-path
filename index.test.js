@@ -1,4 +1,4 @@
-const { set, del, get } = require("./index");
+const { set, del, get, merge } = require("./index");
 
 describe("test set function with objects", () => {
   const defaultObject = {
@@ -301,6 +301,56 @@ describe("test get function", () => {
   it("should return undefined when get a inexistent property of object", () => {
     const result = get(defaultObject, "address.details.list.delta");
     const expected = defaultObject.address.details.delta;
+
+    expect(result).toEqual(expected);
+  });
+});
+
+describe("test merge function", () => {
+  const defaultObject = {
+    name: "Jucian0",
+    email: "juciano@juciano.com",
+    address: {
+      details: {
+        street: "Street",
+        number: 1220,
+        list: [1, 2, 3, 4, 5],
+      },
+    },
+  };
+
+  it("get should be a function", () => {
+    expect(typeof merge).toEqual("function");
+  });
+
+  it("should merge an object", () => {
+    const mergeObject = {
+      mergedProperty: "defaultValue",
+    };
+    const result = merge(defaultObject, "address", mergeObject);
+    const expected = {
+      ...defaultObject,
+      address: {
+        ...defaultObject.address,
+        ...mergeObject,
+      },
+    };
+
+    expect(result).toEqual(expected);
+  });
+
+  it("should merge an array", () => {
+    const mergeObject = [6, 7, 8, 9];
+    const result = merge(defaultObject, "address.details.list", mergeObject);
+    const expected = {
+      ...defaultObject,
+      address: {
+        details: {
+          ...defaultObject.address.details,
+          list: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        },
+      },
+    };
 
     expect(result).toEqual(expected);
   });
