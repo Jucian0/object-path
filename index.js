@@ -14,68 +14,28 @@ function isPrimitive(value) {
   );
 }
 
-function mutable(object, prop, value) {
-  const paths = propToPath(prop);
-
-  function setPropertyValue(partialObject, index) {
-    const nextPath = index + 1;
-
-    if (Array.isArray(partialObject[paths[index]])) {
-      const newArray = partialObject[paths[index]];
-      newArray[paths[index + 1]] = value;
-    }
-
-    if (partialObject.hasOwnProperty(paths[index])) {
-      const data = partialObject[paths[index]];
-
-      if (typeof data === "object") {
-        return setPropertyValue(data, nextPath);
-      }
-    } else {
-      if (index <= paths.length && !!paths[nextPath]) {
-        if (isNaN(parseInt(paths[nextPath]))) {
-          const newObject = Object.assign(partialObject, {
-            [paths[index]]: {},
-          });
-
-          return setPropertyValue(newObject, index);
-        }
-
-        const newArray = Object.assign(partialObject, { [paths[index]]: [] });
-
-        return setPropertyValue(newArray, index);
-      }
-    }
-
-    return (partialObject[paths[index]] = value);
-  }
-
-  return setPropertyValue(object, 0);
-}
-
 function set(defaultObject, prop, value) {
   const paths = propToPath(prop);
 
   function setPropertyValue(object, index) {
-    const nextPath = index + 1;
+    const clone = Object.assign({}, object);
 
-    if (object.hasOwnProperty(paths[index])) {
-      const dataOrObject = object[paths[index]];
-      const clone = Object.assign({}, object);
-
-      if (Array.isArray(object[paths[nextPath]])) {
-        clone[paths[nextPath]][paths[nextPath + 1]] = value;
-        return clone;
+    if (Array.isArray(clone[paths[index]])) {
+      if (Array.isArray(value)) {
+        clone[paths[index]] = value;
+      } else {
+        clone[paths[index]][index - 1] = value;
       }
-
-      if (typeof dataOrObject === "object") {
-        clone[paths[index]] = setPropertyValue(dataOrObject, nextPath);
+    } else if (typeof clone[paths[index]] === "object") {
+      if (paths.length > index + 1) {
+        clone[paths[index]] = setPropertyValue(clone[paths[index]], index + 1);
       } else {
         clone[paths[index]] = value;
       }
-      return clone;
+    } else {
+      clone[paths[index]] = value;
     }
-    return object;
+    return clone;
   }
 
   return setPropertyValue(defaultObject, 0);
