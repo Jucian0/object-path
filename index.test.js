@@ -1,6 +1,6 @@
 const { set } = require("./index");
 
-describe("tests with objects", () => {
+describe("test set function with objects", () => {
   const defaultObject = {
     name: "juciano de carvalho",
     email: "juciano@juciano.com",
@@ -101,7 +101,7 @@ describe("tests with objects", () => {
   });
 });
 
-describe("tests with arrays", () => {
+describe("test set function with arrays", () => {
   const defaultObject = {
     name: "juciano de carvalho",
     email: "juciano@juciano.com",
@@ -111,7 +111,7 @@ describe("tests with arrays", () => {
   };
 
   it("should assign an array", () => {
-    const array = [1, 2, 3, 4];
+    const array = [1, 2, 3, 4, 1000000];
 
     const result = set(defaultObject, "address.info", array);
     const expected = {
@@ -128,13 +128,13 @@ describe("tests with arrays", () => {
   it("should assign a value in an array", () => {
     const value = 1;
 
-    const result = set(defaultObject, "address.info.0", value);
+    const result = set(defaultObject, "address.info.3", value);
 
     expect(result).toEqual({
       ...defaultObject,
       address: {
         ...defaultObject.address,
-        info: [1],
+        info: [undefined, undefined, undefined, 1],
       },
     });
   });
@@ -153,13 +153,27 @@ describe("tests with arrays", () => {
   it("should assign a value in an array with other values", () => {
     const value = [1, 2, 3, 4];
 
-    const result = set(defaultObject, "info", value);
-
-    console.log(result);
-
-    expect(result).toEqual({
+    const result = set(defaultObject, "address.info", value);
+    const expected = {
       ...defaultObject,
-      info: value,
-    });
+      address: {
+        info: value,
+      },
+    };
+
+    expect(result).toEqual(expected);
+  });
+
+  it("should change a specific value of an array", () => {
+    const value = [1, 2, 3, 4];
+
+    const result = set(defaultObject, "address.info.0", value);
+    const expected = {
+      ...defaultObject,
+      address: {
+        info: [value],
+      },
+    };
+    expect(result).toEqual(expected);
   });
 });

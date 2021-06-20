@@ -18,24 +18,18 @@ function set(defaultObject, prop, value) {
   const paths = propToPath(prop);
 
   function setPropertyValue(object, index) {
-    const clone = Object.assign({}, object);
+    let clone = Object.assign({}, object);
 
-    if (Array.isArray(clone[paths[index]])) {
-      if (Array.isArray(value)) {
-        clone[paths[index]] = value;
-      } else {
-        clone[paths[index]][index - 1] = value;
+    if (paths.length > index) {
+      if (Array.isArray(object)) {
+        paths[index] = parseInt(paths[index]);
+        clone = object.slice();
       }
-    } else if (typeof clone[paths[index]] === "object") {
-      if (paths.length > index + 1) {
-        clone[paths[index]] = setPropertyValue(clone[paths[index]], index + 1);
-      } else {
-        clone[paths[index]] = value;
-      }
-    } else {
-      clone[paths[index]] = value;
+      clone[paths[index]] = setPropertyValue(object[paths[index]], index + 1);
+
+      return clone;
     }
-    return clone;
+    return value;
   }
 
   return setPropertyValue(defaultObject, 0);
