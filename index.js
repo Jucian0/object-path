@@ -66,7 +66,22 @@ function del(defaultObject, prop) {
   return deletePropertyValue(defaultObject, 0);
 }
 
+function get(defaultObject, prop) {
+  const paths = propToPath(prop);
+
+  function getPropertyValue(object, index) {
+    const clone = Object.assign({}, object);
+    if (paths.length === index + 1) {
+      return clone[paths[index]];
+    }
+    return getPropertyValue(object[paths[index]], index + 1);
+  }
+
+  return getPropertyValue(defaultObject, 0);
+}
+
 module.exports = {
   set,
   del,
+  get,
 };

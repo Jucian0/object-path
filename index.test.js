@@ -1,4 +1,4 @@
-const { set, del } = require("./index");
+const { set, del, get } = require("./index");
 
 describe("test set function with objects", () => {
   const defaultObject = {
@@ -12,6 +12,10 @@ describe("test set function with objects", () => {
       },
     },
   };
+
+  it("set should be a function", () => {
+    expect(typeof set).toEqual("function");
+  });
 
   it("should change first layer", () => {
     const newName = "Antonio";
@@ -191,6 +195,10 @@ describe("test del function", () => {
     },
   };
 
+  it("del should be a function", () => {
+    expect(typeof del).toEqual("function");
+  });
+
   it("should delete a value at thirsty layer", () => {
     const result = del(defaultObject, "address.details.street");
 
@@ -234,6 +242,66 @@ describe("test del function", () => {
         },
       },
     };
+    expect(result).toEqual(expected);
+  });
+});
+
+describe("test get function", () => {
+  const defaultObject = {
+    name: "Jucian0",
+    email: "juciano@juciano.com",
+    address: {
+      details: {
+        street: "Street",
+        number: 1220,
+        list: [1, 2, 3, 4, 5],
+      },
+    },
+  };
+
+  it("get should be a function", () => {
+    expect(typeof get).toEqual("function");
+  });
+
+  it("should get an object of property object", () => {
+    const result = get(defaultObject, "address.details");
+    const expected = defaultObject.address.details;
+
+    expect(result).toEqual(expected);
+  });
+
+  it("should get an array of property object", () => {
+    const result = get(defaultObject, "address.details.list");
+    const expected = defaultObject.address.details.list;
+
+    expect(result).toEqual(expected);
+  });
+
+  it("should get a primitive value of property object", () => {
+    const result = get(defaultObject, "address.details.number");
+    const expected = defaultObject.address.details.number;
+
+    expect(result).toEqual(expected);
+  });
+
+  it("should get a value of an array of property object", () => {
+    const result = get(defaultObject, "address.details.list.3");
+    const expected = defaultObject.address.details.list[3];
+
+    expect(result).toEqual(expected);
+  });
+
+  it("should return undefined when get a inexistent index of array", () => {
+    const result = get(defaultObject, "address.details.list.30");
+    const expected = defaultObject.address.details.list[30];
+
+    expect(result).toEqual(expected);
+  });
+
+  it("should return undefined when get a inexistent property of object", () => {
+    const result = get(defaultObject, "address.details.list.delta");
+    const expected = defaultObject.address.details.delta;
+
     expect(result).toEqual(expected);
   });
 });
