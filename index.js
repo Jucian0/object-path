@@ -31,17 +31,13 @@ function del(defaultObject, prop) {
       if (Array.isArray(object)) {
         paths[index] = parseInt(paths[index]);
         clone = object.slice();
-      }
-
-      if (Array.isArray(object)) {
         clone.splice(paths[index], 1);
-      } else {
-        const result = deletePropertyValue(object[paths[index]], index + 1);
-
-        typeof result === "undefined"
-          ? delete clone[paths[index]]
-          : (clone[paths[index]] = result);
+        return clone;
       }
+      const result = deletePropertyValue(object[paths[index]], index + 1);
+      typeof result === "undefined"
+        ? delete clone[paths[index]]
+        : (clone[paths[index]] = result);
 
       return clone;
     }
